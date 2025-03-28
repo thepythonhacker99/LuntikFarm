@@ -62,10 +62,7 @@ target_link_libraries(LuntikFarm PRIVATE sfml-graphics sfml-network sfml-graphic
 install(TARGETS LuntikFarm)
 
 # ENTT
-target_include_directories(LuntikFarm PRIVATE C:/ENTT/src)
-
-# RANDOM
-target_include_directories(LuntikFarm PRIVATE libs/Random/single_include)
+target_include_directories(LuntikFarm PRIVATE libs/entt)
 
 # LOGY
 target_include_directories(LuntikFarm PRIVATE libs/logy)
