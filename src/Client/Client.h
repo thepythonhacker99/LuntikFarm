@@ -10,6 +10,7 @@
 enum class ShopId {
     FARM,
     WALL,
+    SOLDIER,
 };
 
 struct ShopItem {
@@ -22,6 +23,7 @@ enum FocusTarget {
     TARGET_NONE,
     TARGET_SHOP,
     TARGET_BUILDING,
+    TARGET_SPAWN,
 };
 
 class Client {
@@ -70,7 +72,7 @@ private:
     FocusTarget m_FocusTarget = TARGET_NONE;
 
     sf::Texture m_ShopTexture;
-    const ShopItem* m_SelectedShopItem = nullptr;
+    const ShopItem *m_SelectedShopItem = nullptr;
 
     static const std::vector<ShopItem> s_ShopItems;
     const int m_ShopSizeX = 5;
@@ -87,5 +89,10 @@ inline const std::vector<ShopItem> Client::s_ShopItems = {
                 .id = ShopId::WALL,
                 .name = "Wall",
                 .price = 10
+        },
+        ShopItem{
+                .id = ShopId::SOLDIER,
+                .name = "Soldier",
+                .price = 100
         }
 };

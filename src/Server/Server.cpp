@@ -435,6 +435,41 @@ void Server::start() {
             })
     );
 
+    m_SocketServer.addReceiveCallback(
+            C2S_SPAWN_SOLDIER_PACKET,
+            std::function<void(ID_t, float, float)>([this](ID_t sender, float x, float y) {
+                if (m_GameState.gameStage != GAME) {
+                    LOG_WARNING("Client", sender, "tried to place wall but game stage is not game");
+                    return;
+                }
+
+                if (x < 0 || x >= m_GameState.mapInfo.size * 32 || y < 0 || y >= m_GameState.mapInfo.size * 32) {
+                    LOG_WARNING("Client", sender, "tried to place wall out of bounds");
+                    return;
+                }
+
+                if (m_GameState.players[sender].gold < 100) {
+                    return;
+                }
+
+                m_GameState.players[sender].gold -= 100;
+                m_SocketServer.send(
+                        sender,
+                        Networking::createPacket<S2C_GOLD_PACKET>(m_GameState.players[sender].gold)
+                );
+
+                auto soldier = m_GameState.registry.create();
+                m_GameState.registry.emplace<NetworkID>(soldier, m_GameState.networkId++);
+                m_GameState.registry.emplace<Position>(soldier, x, y);
+                m_GameState.registry.emplace<Soldier>(
+                        soldier,
+                        Soldier(
+                                sender,
+                                SoldierType::Basic
+                        ));
+            })
+    );
+
     m_SocketServer.start();
     if (!m_SocketServer.isListenThreadRunning()) {
         LOG_WARNING("Failed to start socket server thread");
@@ -490,7 +525,7 @@ void Server::tick(double deltaTime) {
 
     {
         auto view = m_GameState.registry.view<Soldier, Position, NetworkID>();
-        view.each([&](auto entity, auto& soldier, auto &position, auto &networkID) {
+        view.each([&](auto entity, auto& soldier, auto& position, auto& networkID) {
             float velocity = deltaTime * 32.f * 3;
 
             sf::Vector2f direction;

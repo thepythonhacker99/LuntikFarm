@@ -223,7 +223,7 @@ void Client::tick(double deltaTime) {
             break;
         }
         case GAME: {
-            if (m_FocusTarget == TARGET_NONE || m_FocusTarget == TARGET_BUILDING) {
+            if (m_FocusTarget == TARGET_NONE || m_FocusTarget == TARGET_BUILDING || m_FocusTarget == TARGET_SPAWN) {
                 sf::Vector2f cameraDelta;
                 if (m_InputManager.isDown(sf::Keyboard::Key::A)) cameraDelta.x -= 1;
                 if (m_InputManager.isDown(sf::Keyboard::Key::D)) cameraDelta.x += 1;
@@ -346,8 +346,15 @@ void Client::tick(double deltaTime) {
                                     itemImage = sf::Sprite(m_Map.m_Wall0000);
                                     break;
                                 }
+                                case ShopId::SOLDIER: {
+                                    itemImage = sf::Sprite(m_Map.m_SoldierTexture);
+                                    itemImage.setTextureRect({{ 0,   0 },
+                                                              { 320, 320 }});
+                                    itemImage.setScale({ 0.1f, 0.1f });
+                                    break;
+                                }
                             }
-                            itemImage.setScale(sf::Vector2f{ 85.f, 85.f } / itemImage.getGlobalBounds().size.x);
+                            itemImage.setScale(itemImage.getScale().componentWiseMul(sf::Vector2f{ 85.f, 85.f } / itemImage.getGlobalBounds().size.x));
                             itemImage.setPosition(pos + sf::Vector2f{ 108.f, 220.f });
                             itemImage.setOrigin(
                                     { itemImage.getLocalBounds().size.x / 2, itemImage.getLocalBounds().size.y });
@@ -360,7 +367,17 @@ void Client::tick(double deltaTime) {
                             m_Renderer.window().draw(priceText);
 
                             if (m_InputManager.isPressed(sf::Mouse::Button::Left) && hovered) {
-                                m_FocusTarget = FocusTarget::TARGET_BUILDING;
+                                switch (item.id) {
+                                    case ShopId::FARM:
+                                    case ShopId::WALL:
+                                        m_FocusTarget = FocusTarget::TARGET_BUILDING;
+                                        break;
+
+                                    case ShopId::SOLDIER:
+                                        m_FocusTarget = FocusTarget::TARGET_SPAWN;
+                                        break;
+                                }
+
                                 m_SelectedShopItem = &s_ShopItems[index];
                             }
                         }
@@ -416,6 +433,29 @@ void Client::tick(double deltaTime) {
                                     break;
                                 }
                             }
+                        }
+                    }
+                    break;
+                }
+                case TARGET_SPAWN: {
+                    if (tileX >= 0 && tileX < m_GameState.mapInfo.size && tileY >= 0 &&
+                        tileY < m_GameState.mapInfo.size) {
+
+                        sf::Sprite sprite(m_Map.m_SoldierTexture);
+                        sprite.setTextureRect({{ 0,   0 },
+                                               { 320, 320 }});
+                        sprite.setScale({ 0.1f, 0.1f });
+                        sprite.setPosition(worldPos);
+                        sprite.setOrigin({ 0, 320 });
+                        sprite.setColor(
+                                sf::Color{ 255, 255, 255,
+                                           static_cast<uint8_t>(20 * std::sin(m_SineTime * 8) + 200) });
+
+                        m_Renderer.setViewMain();
+                        m_Renderer.window().draw(sprite);
+
+                        if (m_InputManager.isPressed(sf::Mouse::Button::Left)) {
+                            m_SocketClient.send(Networking::createPacket<C2S_SPAWN_SOLDIER_PACKET>(worldPos.x, worldPos.y));
                         }
                     }
                     break;

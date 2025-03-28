@@ -34,7 +34,9 @@ enum PacketID {
 
     S2C_SOLDIER_CREATE_PACKET,
     S2C_SOLDIER_DELETE_PACKET,
-    S2C_SOLDIER_POSITION_PACKET
+    S2C_SOLDIER_POSITION_PACKET,
+
+    C2S_SPAWN_SOLDIER_PACKET
 };
 
 inline void registerPackets() {
@@ -63,4 +65,6 @@ inline void registerPackets() {
     Networking::registerPacket<S2C_SOLDIER_CREATE_PACKET, NetworkID, Soldier, Position>();
     Networking::registerPacket<S2C_SOLDIER_DELETE_PACKET, NetworkID>();
     Networking::registerPacket<S2C_SOLDIER_POSITION_PACKET, NetworkID, Position>();
+
+    Networking::registerPacket<C2S_SPAWN_SOLDIER_PACKET, float, float>();
 }
