@@ -1,0 +1,28 @@
+# soldiers
+ - add a soldier to shop
+ - add soldier size and calculate his hitbox
+ - place soldiers only on valid land (not touching structures)
+ - soldier AI
+  1. avoid eachother (repulsive force when close)
+  2. pathfinding
+  3. attack structures/other soldiers
+ - soldier UI
+  1. select some soldiers or individual ones
+  2. make soldiers attack a target
+  3. or make them go to a position
+  4. defence mode?
+
+# structures
+ - health to structures
+ - upgrade structures
+ - different structures
+  1. wall
+  2. archer
+  3. mortar
+
+# cards
+ - fireball card
+ - health card (for structures)
+ - healing pool for soldiers
+ - buff pool
+ - freeze pool
