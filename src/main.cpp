@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
     registerPackets();
 
     constexpr uint16_t PORT = 6969;
-    const sf::IpAddress IP = sf::IpAddress::LocalHost;
+    const sf::IpAddress IP = sf::IpAddress::getLocalAddress().value_or(sf::IpAddress::LocalHost);
 
     if (argc > 1) {
         if (strcmp(argv[1], "server") == 0) {
