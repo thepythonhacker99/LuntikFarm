@@ -1,6 +1,6 @@
 # soldiers
  + add a soldier to shop
- - add soldier size and calculate his hitbox
+ + add soldier size and calculate his hitbox
  - place soldiers only on valid land (not touching structures)
  - soldier AI
   1. avoid eachother (repulsive force when close)
