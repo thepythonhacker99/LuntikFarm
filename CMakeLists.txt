@@ -44,6 +44,8 @@ add_executable(LuntikFarm src/main.cpp
         src/Client/Renderer/YSort.h
         src/Server/Position.h
         src/Client/InterpolatedPosition.h
+        src/Server/Hitbox.h
+        src/opts.h
 )
 
 target_include_directories(LuntikFarm PRIVATE src)

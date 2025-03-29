@@ -5,6 +5,7 @@
 #include "Farm.h"
 #include "Networking/Overloads.h"
 #include "Soldier.h"
+#include "Hitbox.h"
 
 #include <cmath>
 
@@ -280,6 +281,7 @@ void Server::start() {
                             );
 
                             // add a soldier
+                            float soldierSize = 32.f;
                             auto soldier = m_GameState.registry.create();
                             m_GameState.registry.emplace<NetworkID>(soldier, m_GameState.networkId++);
                             m_GameState.registry.emplace<Position>(soldier,
@@ -290,9 +292,11 @@ void Server::start() {
                                     soldier,
                                     Soldier(
                                             sendId,
-                                            SoldierType::Basic
+                                            SoldierType::Basic,
+                                            soldierSize
                                     )
                             );
+                            m_GameState.registry.emplace<Hitbox>(soldier, Hitbox(soldierSize, soldierSize / 2.f));
 
                             i++;
                         }
@@ -465,7 +469,8 @@ void Server::start() {
                         soldier,
                         Soldier(
                                 sender,
-                                SoldierType::Basic
+                                SoldierType::Basic,
+                                32.f
                         ));
             })
     );

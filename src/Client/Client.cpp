@@ -8,6 +8,7 @@
 #include "Renderer/YSort.h"
 #include "Server/Position.h"
 #include "InterpolatedPosition.h"
+#include "Server/Hitbox.h"
 
 Client::Client(sf::IpAddress ip, uint16_t port, std::string name) : m_Ip(ip), m_Port(port),
                                                                     m_SocketClient(ip, port),
@@ -124,6 +125,7 @@ void Client::start() {
                 m_GameState.registry.emplace<Soldier>(soldierEntity, soldier);
                 m_GameState.registry.emplace<InterpolatedPosition>(soldierEntity, pos.x, pos.y, 0.15f);
                 m_GameState.registry.emplace<YSort>(soldierEntity, pos.y);
+                m_GameState.registry.emplace<Hitbox>(soldierEntity, Hitbox(soldier.size, soldier.size / 2.f));
             })
     );
 

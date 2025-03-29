@@ -11,15 +11,16 @@ enum class SoldierType {
 struct Soldier {
     ID_t owner;
     SoldierType type;
+    float size;
 
     Soldier() = default;
-    Soldier(ID_t owner, SoldierType type) : owner(owner), type(type) {}
+    Soldier(ID_t owner, SoldierType type, float size) : owner(owner), type(type), size(size) {}
 };
 
 inline sf::Packet& operator<<(sf::Packet& packet, const Soldier& soldier) {
-    return packet << soldier.owner << (int) soldier.type;
+    return packet << soldier.owner << (int) soldier.type << soldier.size;
 }
 
 inline sf::Packet& operator>>(sf::Packet& packet, Soldier& soldier) {
-    return packet >> soldier.owner >> (int&) soldier.type;
+    return packet >> soldier.owner >> (int&) soldier.type >> soldier.size;
 }

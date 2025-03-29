@@ -5,6 +5,8 @@
 #include "Server/Soldier.h"
 #include "Server/Position.h"
 #include "InterpolatedPosition.h"
+#include "Server/Hitbox.h"
+#include "opts.h"
 
 Map::Map(MapInfo *mapInfo) : m_MapInfo(mapInfo) {
     if (!m_GrassTexture.loadFromFile("assets/grass.png")) {
@@ -135,6 +137,7 @@ void Map::render(double dt, Renderer& renderer, entt::registry& registry) {
         auto *soldier = registry.try_get<Soldier>(entity);
         if (soldier) {
             auto position = registry.get<InterpolatedPosition>(entity);
+            auto hitbox = registry.get<Hitbox>(entity);
 
             sf::Sprite sprite(m_SoldierTexture);
             sprite.scale({ 0.1f, 0.1f });
@@ -143,6 +146,15 @@ void Map::render(double dt, Renderer& renderer, entt::registry& registry) {
             sprite.setTextureRect({{ m_AnimationIndex * 320, 0 },
                                    { 320,                    320 }});
             renderer.window().draw(sprite);
+
+#if LTK_DEBUG
+            sf::FloatRect hitboxRect = hitbox.getRect({ position.x + soldier->size / 2, position.y });
+            sf::RectangleShape hitboxShape;
+            hitboxShape.setPosition({ hitboxRect.position.x, hitboxRect.position.y });
+            hitboxShape.setSize({ hitboxRect.size.x, hitboxRect.size.y });
+            hitboxShape.setFillColor({ 255, 0, 0, 100 });
+            renderer.window().draw(hitboxShape);
+#endif
         }
     }
 }
